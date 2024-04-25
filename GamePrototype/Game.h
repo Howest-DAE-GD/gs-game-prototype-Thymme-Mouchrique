@@ -1,5 +1,7 @@
 #pragma once
 #include "BaseGame.h"
+#include "Player.h"
+#include "hud.h"
 class Game : public BaseGame
 {
 public:
@@ -22,9 +24,23 @@ public:
 	void ProcessMouseUpEvent( const SDL_MouseButtonEvent& e ) override;
 
 private:
+	hud* m_pHud;
+	Player* m_pPlayer;
 
 	// FUNCTIONS
 	void Initialize();
 	void Cleanup( );
 	void ClearBackground( ) const;
+
+	void InitPlayer();
+	void UpdatePlayer(float elapsedSec);
+	void DrawPlayer() const;
+	void PlayerCheckKeyDown(const SDL_KeyboardEvent& e);
+	void PlayerCheckKeyUp(const SDL_KeyboardEvent& e);
+	void DeletePlayer();
+
+	void InitHud();
+	void DrawHud() const;
+	void UpdateHud();
+	void DeleteHud();
 };

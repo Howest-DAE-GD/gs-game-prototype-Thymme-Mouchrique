@@ -12,99 +12,106 @@ Game::~Game( )
 	Cleanup( );
 }
 
-void Game::Initialize( )
+void Game::Initialize()
 {
-	
+	InitPlayer();
+	InitHud();
 }
 
 void Game::Cleanup( )
 {
+	DeletePlayer();
+	DeleteHud();
 }
 
 void Game::Update( float elapsedSec )
 {
-	// Check keyboard state
-	//const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
-	//if ( pStates[SDL_SCANCODE_RIGHT] )
-	//{
-	//	std::cout << "Right arrow key is down\n";
-	//}
-	//if ( pStates[SDL_SCANCODE_LEFT] && pStates[SDL_SCANCODE_UP])
-	//{
-	//	std::cout << "Left and up arrow keys are down\n";
-	//}
+	UpdatePlayer(elapsedSec);
+	UpdateHud();
 }
 
 void Game::Draw( ) const
 {
 	ClearBackground( );
+	DrawPlayer();
+	DrawHud();
 }
 
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
 {
-	//std::cout << "KEYDOWN event: " << e.keysym.sym << std::endl;
+	PlayerCheckKeyDown(e);
 }
 
 void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
 {
-	//std::cout << "KEYUP event: " << e.keysym.sym << std::endl;
-	//switch ( e.keysym.sym )
-	//{
-	//case SDLK_LEFT:
-	//	//std::cout << "Left arrow key released\n";
-	//	break;
-	//case SDLK_RIGHT:
-	//	//std::cout << "`Right arrow key released\n";
-	//	break;
-	//case SDLK_1:
-	//case SDLK_KP_1:
-	//	//std::cout << "Key 1 released\n";
-	//	break;
-	//}
+	PlayerCheckKeyUp(e);
 }
 
 void Game::ProcessMouseMotionEvent( const SDL_MouseMotionEvent& e )
 {
-	//std::cout << "MOUSEMOTION event: " << e.x << ", " << e.y << std::endl;
+
 }
 
 void Game::ProcessMouseDownEvent( const SDL_MouseButtonEvent& e )
 {
-	//std::cout << "MOUSEBUTTONDOWN event: ";
-	//switch ( e.button )
-	//{
-	//case SDL_BUTTON_LEFT:
-	//	std::cout << " left button " << std::endl;
-	//	break;
-	//case SDL_BUTTON_RIGHT:
-	//	std::cout << " right button " << std::endl;
-	//	break;
-	//case SDL_BUTTON_MIDDLE:
-	//	std::cout << " middle button " << std::endl;
-	//	break;
-	//}
-	
+
 }
 
 void Game::ProcessMouseUpEvent( const SDL_MouseButtonEvent& e )
 {
-	//std::cout << "MOUSEBUTTONUP event: ";
-	//switch ( e.button )
-	//{
-	//case SDL_BUTTON_LEFT:
-	//	std::cout << " left button " << std::endl;
-	//	break;
-	//case SDL_BUTTON_RIGHT:
-	//	std::cout << " right button " << std::endl;
-	//	break;
-	//case SDL_BUTTON_MIDDLE:
-	//	std::cout << " middle button " << std::endl;
-	//	break;
-	//}
+	
 }
 
 void Game::ClearBackground( ) const
 {
-	glClearColor( 0.0f, 0.0f, 0.3f, 1.0f );
+	glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
 	glClear( GL_COLOR_BUFFER_BIT );
 }
+#pragma region HUD functions
+void Game::InitHud()
+{
+	m_pHud = new hud(GetViewPort().width, GetViewPort().height);
+}
+void Game::DrawHud() const
+{
+	m_pHud->Draw();
+}
+void Game::UpdateHud()
+{
+	m_pHud->Update();
+}
+void Game::DeleteHud()
+{
+	delete m_pHud;
+}
+#pragma endregion HUD functions
+
+#pragma region Player Functions
+void Game::InitPlayer()
+{
+	m_pPlayer = new Player();
+}
+void Game::UpdatePlayer(float elapsedSec)
+{
+	m_pPlayer->Update(elapsedSec);
+}
+void Game::DrawPlayer() const
+{
+	m_pPlayer->Draw();
+}
+void Game::PlayerCheckKeyDown(const SDL_KeyboardEvent& e)
+{
+	m_pPlayer->CheckKeyDown(e);
+}
+void Game::PlayerCheckKeyUp(const SDL_KeyboardEvent& e)
+{
+	m_pPlayer->CheckKeyUp(e);
+}
+
+void Game::DeletePlayer()
+{
+	delete m_pPlayer;
+}
+
+#pragma endregion Player Functions
+
