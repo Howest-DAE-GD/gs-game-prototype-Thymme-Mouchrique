@@ -27,7 +27,7 @@ void Game::Cleanup( )
 void Game::Update( float elapsedSec )
 {
 	UpdatePlayer(elapsedSec);
-	UpdateHud();
+	UpdateHud(elapsedSec);
 }
 
 void Game::Draw( ) const
@@ -76,9 +76,9 @@ void Game::DrawHud() const
 {
 	m_pHud->Draw();
 }
-void Game::UpdateHud()
+void Game::UpdateHud(float elapsedSec)
 {
-	m_pHud->Update();
+	m_pHud->Update(elapsedSec);
 }
 void Game::DeleteHud()
 {

@@ -41,6 +41,6 @@ private:
 
 	void InitHud();
 	void DrawHud() const;
-	void UpdateHud();
+	void UpdateHud(float elapsedSec);
 	void DeleteHud();
 };

@@ -9,8 +9,10 @@ public:
 	~hud();
 
 	void Draw() const;
-	void Update();
+	void Update(float elapsedSec);
 private:
+	void UpdateScoreTexture();
+
 	float m_ScreenWidth;
 	float m_ScreenHeight;
 

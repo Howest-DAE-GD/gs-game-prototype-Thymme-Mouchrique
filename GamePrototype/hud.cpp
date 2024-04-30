@@ -9,8 +9,8 @@ hud::hud(const Point2f& screenDimensions) :
 hud::hud(float screenWidth, float screenHeight):
 	m_ScreenWidth{screenWidth},
 	m_ScreenHeight{ screenHeight },
-	m_Score{},
-	m_ScoreTexture{new Texture("test", "font/font.ttf", 100, Color4f(1, 1, 1, 1))}
+	m_Score{1},
+	m_ScoreTexture{ new Texture(" ", "font/font.ttf", 100, Color4f(1, 1, 1, 1)) }
 {
 
 }
@@ -23,10 +23,15 @@ hud::~hud()
 void hud::Draw() const
 {
 	const Point2f scoreTexturePosition{ m_ScreenWidth - m_ScoreTexture->GetWidth() - 5, m_ScreenHeight - m_ScoreTexture->GetHeight()};
-	std::cout << scoreTexturePosition.x << std::endl;
 	m_ScoreTexture->Draw(scoreTexturePosition);
 }
-void hud::Update()
+void hud::Update(float elapsedSec)
 {
+	UpdateScoreTexture();
+}
 
+void hud::UpdateScoreTexture()
+{
+	delete m_ScoreTexture;
+	m_ScoreTexture = new Texture(std::to_string(m_Score), "font/font.ttf", 100, Color4f(1, 1, 1, 1));
 }

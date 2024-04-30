@@ -4,7 +4,7 @@
 Player::Player()
 	:
 	m_Health{100},
-	m_Position{},
+	m_Position{100, 100},
 	m_MovingStateX{},
 	m_MovingStateY{},
 	m_PlayerTexture{ new Texture("player/player.png") }
@@ -28,7 +28,7 @@ void Player::Update(float elapsedSec)
 	const float speed{ 1000 };
 	Point2f movePlayerPos{};
 
-	if (m_Position.x > 0 && m_Position.y < 500)
+	if (m_Position.x >= 0)
 	{
 		switch (m_MovingStateX)
 		{
@@ -43,6 +43,13 @@ void Player::Update(float elapsedSec)
 		default:
 			break;
 		}
+	}
+	else
+	{
+		++m_Position.x;
+	}
+	if (m_Position.y <= 500)
+	{
 		switch (m_MovingStateY)
 		{
 		case Player::StateY::neutral:
@@ -58,8 +65,9 @@ void Player::Update(float elapsedSec)
 		}
 		MovePlayer(movePlayerPos);
 	}
-	else {
-		MovePlayer(Point2f(1, -1));
+	else
+	{
+		--m_Position.y;
 	}
 #pragma endregion movement
 }
