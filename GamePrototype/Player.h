@@ -1,5 +1,6 @@
 #pragma once
 #include "texture.h"
+#include <SoundEffect.h>
 #include <iostream>
 class Player
 {
@@ -27,8 +28,11 @@ public:
 private:
 	int m_Health;
 	Point2f m_Position;
-	Texture* m_PlayerTexture;
+	Texture* m_pPlayerTexture;
 	StateX m_MovingStateX;
 	StateY m_MovingStateY;
+
+	SoundEffect* m_pCoughingSound;
+
 };
 

@@ -1,34 +1,38 @@
 #include "pch.h"
 #include "Player.h"
-
 Player::Player()
 	:
 	m_Health{100},
 	m_Position{100, 100},
 	m_MovingStateX{},
 	m_MovingStateY{},
-	m_PlayerTexture{ new Texture("player/player.png") }
+	m_pPlayerTexture{ new Texture("player/player.png") },
+	m_pCoughingSound{ new SoundEffect("player/sound/cough.mp3") }
 {
-	
+
 }
 Player::~Player()
 {
-	delete m_PlayerTexture;
+	delete m_pPlayerTexture;
+	delete m_pCoughingSound;
 }
 
 
 void Player::Draw() const
 {
-	m_PlayerTexture->Draw(m_Position);
+	m_pPlayerTexture->Draw(m_Position);
 }
 
 void Player::Update(float elapsedSec)
 {
+
+	//m_pCoughingSound->Play(1);
+	//TODO: randomize
 #pragma region movement
 	const float speed{ 1000 };
 	Point2f movePlayerPos{};
 
-	if (m_Position.x >= 0)
+	if (m_Position.x >= 0 and m_Position.x + m_pPlayerTexture->GetWidth() <= 1280)
 	{
 		switch (m_MovingStateX)
 		{
@@ -46,9 +50,9 @@ void Player::Update(float elapsedSec)
 	}
 	else
 	{
-		++m_Position.x;
+		
 	}
-	if (m_Position.y <= 500)
+	if (m_Position.y > 0 and m_Position.y + m_pPlayerTexture->GetHeight() <= 720 )
 	{
 		switch (m_MovingStateY)
 		{
@@ -67,7 +71,7 @@ void Player::Update(float elapsedSec)
 	}
 	else
 	{
-		--m_Position.y;
+
 	}
 #pragma endregion movement
 }

@@ -27,6 +27,9 @@ void hud::Draw() const
 }
 void hud::Update(float elapsedSec)
 {
+
+
+
 	UpdateScoreTexture();
 }
 
