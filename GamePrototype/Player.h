@@ -6,16 +6,12 @@ class Player
 {
 public:
 
-	enum class StateX {
+	enum class State {
 		neutral,
 		movingLeft,
 		movingRight,
 	};
-	enum class StateY {
-		neutral, 
-		movingUp,
-		movingDown,
-	};
+
 
 	explicit Player();
 	~Player();
@@ -25,13 +21,25 @@ public:
 	void MovePlayer(const Point2f& translate);
 	void CheckKeyDown(const SDL_KeyboardEvent& e);
 	void CheckKeyUp(const SDL_KeyboardEvent& e);
+
+	int GetHealth() const;
+	Point2f GetPosition() const;
+	void SetPosition(const Point2f& setPosition);
+	void SetCanMove(const bool canMove);
+	void UpdateHealth(int healthToSubtract);
+	float GetWidth() const;
+	float GetHeight() const;
+	
 private:
+	void Jump();
 	int m_Health;
 	Point2f m_Position;
+	Point2f m_Velocity;
 	Texture* m_pPlayerTexture;
-	StateX m_MovingStateX;
-	StateY m_MovingStateY;
-
+	const float m_Speed;
+	bool m_IsJumping;
+	bool m_IsOnGround;
+	bool m_CanMove;
 	SoundEffect* m_pCoughingSound;
 
 };

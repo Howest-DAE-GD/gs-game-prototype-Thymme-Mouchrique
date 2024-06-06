@@ -11,7 +11,7 @@ int SDL_main(int argv, char** args)
 
 	StartHeapControl();
 
-	Game* pGame{ new Game{ Window{ "Hooikoorts: The Game - Mouchrique, Thymme - 1DAE28", 1280 , 720} } };
+	Game* pGame{ new Game{ Window{ "Hooikoorts: The Game - Mouchrique, Thymme - 1DAE28", 720 , 480} } };
 	pGame->Run();
 	delete pGame;
 

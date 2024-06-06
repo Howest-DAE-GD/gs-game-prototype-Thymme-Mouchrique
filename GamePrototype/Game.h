@@ -2,6 +2,11 @@
 #include "BaseGame.h"
 #include "Player.h"
 #include "hud.h"
+#include "ParticleManager.h"
+#include "SoundManager.h"
+#include "World.h"
+#include "Camera.h"
+
 class Game : public BaseGame
 {
 public:
@@ -26,6 +31,13 @@ public:
 private:
 	hud* m_pHud;
 	Player* m_pPlayer;
+	ParticleManager* m_ParticleManager;
+	SoundManager* m_pSoundManager;
+	World* m_pWorld;
+	Camera* m_pCamera;
+	NpcHealthManager* m_pNpcHealthManager;
+
+	float m_HitCooldown;
 
 	// FUNCTIONS
 	void Initialize();
@@ -43,4 +55,29 @@ private:
 	void DrawHud() const;
 	void UpdateHud(float elapsedSec);
 	void DeleteHud();
+
+	void InitParticleManager();
+	void UpdateParticleManager(float elapsedSec);
+	void DrawParticleManager() const;
+	void DeleteParticleManager();
+
+	void InitSoundManager();
+	void UpdateSoundManager(float elapsedSec);
+	void DrawSoundManager() const;
+	void DeleteSoundManager();
+
+	void InitWorld(); 
+	void DeleteWorld();
+	void DrawWorld() const;
+	void UpdateWorld(float elapsedSec); 
+
+	void InitCamera();
+	void DeleteCamera();
+	void ResetCamera() const;
+	void UpdateCamera(float elapsedSec);
+
+	void InitNpc();
+	void UpdateNpc(float elapsedSec);
+	void DrawNpc() const;
+	void DeleteNpc();
 };

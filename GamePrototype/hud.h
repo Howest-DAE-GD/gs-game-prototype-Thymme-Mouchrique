@@ -1,5 +1,6 @@
 #pragma once
 #include "texture.h"
+#include <utils.h>
 #include <iostream>
 class hud
 {
@@ -10,15 +11,22 @@ public:
 
 	void Draw() const;
 	void Update(float elapsedSec);
+	void SetHealth(const int playerHealth);
+	float GetScore() const noexcept;
+
 private:
 	void UpdateScoreTexture();
-
+	void UpdateHealthbar();
+	void UpdateTimer(float elapsedSec);
 	float m_ScreenWidth;
 	float m_ScreenHeight;
 
 	//TTF_Font m_pFont;
 	Texture* m_ScoreTexture;
-	int m_Score;
+	Texture* m_TimerTexture;
+	float m_Score;
+	int m_PlayerHealth;
+	float m_Timer;
 };
 
 

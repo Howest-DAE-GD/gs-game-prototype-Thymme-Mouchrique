@@ -10,7 +10,8 @@ BaseGame::BaseGame(const Window& window)
 	, m_pWindow{ nullptr }
 	, m_pContext{ nullptr }
 	, m_Initialized{ false }
-	, m_MaxElapsedSeconds{ 0.1f }
+	, m_MaxElapsedSeconds{ 0.1f },
+	m_Quit{false}
 {
 	InitializeGameEngine();
 }
@@ -135,14 +136,12 @@ void BaseGame::Run()
 	}
 
 	// Main loop flag
-	bool quit{ false };
 
 	// Set start time
 	std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
-
 	//The event loop
 	SDL_Event e{};
-	while (!quit)
+	while (!m_Quit)
 	{
 		// Poll next event from queue
 		while (SDL_PollEvent(&e) != 0)
@@ -151,7 +150,7 @@ void BaseGame::Run()
 			switch (e.type)
 			{
 			case SDL_QUIT:
-				quit = true;
+				m_Quit = true;
 				break;
 			case SDL_KEYDOWN:
 				this->ProcessKeyDownEvent(e.key);
@@ -174,7 +173,7 @@ void BaseGame::Run()
 			}
 		}
 
-		if (!quit)
+		if (!m_Quit)
 		{
 			// Get current time
 			std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();

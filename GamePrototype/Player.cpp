@@ -1,13 +1,16 @@
 #include "pch.h"
 #include "Player.h"
+#include <BaseGame.h>
 Player::Player()
 	:
 	m_Health{100},
 	m_Position{100, 100},
-	m_MovingStateX{},
-	m_MovingStateY{},
 	m_pPlayerTexture{ new Texture("player/player.png") },
-	m_pCoughingSound{ new SoundEffect("player/sound/cough.mp3") }
+	m_pCoughingSound{ new SoundEffect("player/sound/cough.mp3") },
+	m_IsOnGround{false},
+	m_IsJumping{false},
+	m_Speed{ 300.f },
+	m_CanMove{true}
 {
 
 }
@@ -25,94 +28,85 @@ void Player::Draw() const
 
 void Player::Update(float elapsedSec)
 {
-
-	//m_pCoughingSound->Play(1);
-	//TODO: randomize
+	if (m_CanMove)
+	{
 #pragma region movement
-	const float speed{ 1000 };
-	Point2f movePlayerPos{};
+		const int mass{ 70 };
+		const float gravity{ -9.81f * mass };
 
-	if (m_Position.x >= 0 and m_Position.x + m_pPlayerTexture->GetWidth() <= 1280)
-	{
-		switch (m_MovingStateX)
+		if (!m_IsOnGround)
 		{
-		case Player::StateX::neutral:
-			break;
-		case Player::StateX::movingLeft:
-			movePlayerPos.x -= speed * elapsedSec;
-			break;
-		case Player::StateX::movingRight:
-			movePlayerPos.x += speed * elapsedSec;
-			break;
-		default:
-			break;
+			m_Velocity.y = m_Velocity.y + gravity * elapsedSec;
+			m_Position.y = m_Position.y + m_Velocity.y * elapsedSec;
 		}
-	}
-	else
-	{
-		
-	}
-	if (m_Position.y > 0 and m_Position.y + m_pPlayerTexture->GetHeight() <= 720 )
-	{
-		switch (m_MovingStateY)
+		if (m_Position.y <= 80)
 		{
-		case Player::StateY::neutral:
-			break;
-		case Player::StateY::movingUp:
-			movePlayerPos.y += speed * elapsedSec;
-			break;
-		case Player::StateY::movingDown:
-			movePlayerPos.y -= speed * elapsedSec;
-			break;
-		default:
-			break;
+			m_Velocity.y = 0;
+			m_IsJumping = false;
+			m_IsOnGround = true;
 		}
-		MovePlayer(movePlayerPos);
-	}
-	else
-	{
 
-	}
+		m_Position.x += m_Speed * elapsedSec;
 #pragma endregion movement
+
+	}
 }
 
 void Player::MovePlayer(const Point2f& translate)
 {
-	m_Position.x += translate.x;
-	m_Position.y += translate.y;
+	m_Velocity.x += translate.x;
 }
 
-
+void Player::SetPosition(const Point2f& newPos)
+{
+	m_Position.x = newPos.x;
+	m_Position.y = newPos.y;
+}
+void Player::SetCanMove(const bool canMove)
+{
+	m_CanMove = canMove;
+}
 void Player::CheckKeyDown(const SDL_KeyboardEvent& e)
 {
-	if (e.keysym.scancode == SDL_SCANCODE_A || e.keysym.scancode == SDL_SCANCODE_LEFT)
+	
+	if (e.keysym.scancode == SDL_SCANCODE_SPACE)
 	{
-		m_MovingStateX = StateX::movingLeft;
-	}
-	else if (e.keysym.scancode == SDL_SCANCODE_D || e.keysym.scancode == SDL_SCANCODE_RIGHT)
-	{
-		m_MovingStateX = StateX::movingRight;
-	}
-	if (e.keysym.scancode == SDL_SCANCODE_W || e.keysym.scancode == SDL_SCANCODE_UP)
-	{
-		m_MovingStateY = StateY::movingUp;
-	}
-	else if (e.keysym.scancode == SDL_SCANCODE_S || e.keysym.scancode == SDL_SCANCODE_DOWN)
-	{
-		m_MovingStateY = StateY::movingDown;
+		Jump();
 	}
 }
 void Player::CheckKeyUp(const SDL_KeyboardEvent& e)
 {
-	if (e.keysym.scancode == SDL_SCANCODE_A || e.keysym.scancode == SDL_SCANCODE_LEFT || 
-		e.keysym.scancode == SDL_SCANCODE_D || e.keysym.scancode == SDL_SCANCODE_RIGHT)
+
+}
+void Player::Jump()
+{
+	if (!m_IsJumping)
 	{
-		m_MovingStateX = StateX::neutral;
+		m_IsOnGround = false;
+		m_IsJumping = true;
+		m_Velocity.y += 400.f;
 	}
-	if (e.keysym.scancode == SDL_SCANCODE_W || e.keysym.scancode == SDL_SCANCODE_UP || 
-		e.keysym.scancode == SDL_SCANCODE_S || e.keysym.scancode == SDL_SCANCODE_DOWN
-)
-	{
-		m_MovingStateY = StateY::neutral;
-	}
+}
+int Player::GetHealth() const
+{
+	return m_Health;
+}
+
+void Player::UpdateHealth(int healthToSubtract)
+{
+	m_Health -= healthToSubtract;
+}
+
+Point2f Player::GetPosition() const
+{
+	return m_Position;
+}
+
+float Player::GetWidth() const
+{
+	return m_pPlayerTexture->GetWidth();
+}
+float Player::GetHeight() const
+{
+	return m_pPlayerTexture->GetHeight();
 }

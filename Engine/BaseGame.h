@@ -51,6 +51,7 @@ public:
 	{
 		return m_Viewport;
 	}
+	bool m_Quit;
 
 private:
 	// DATA MEMBERS
