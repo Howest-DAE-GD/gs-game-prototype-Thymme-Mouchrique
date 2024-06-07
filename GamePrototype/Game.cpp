@@ -14,7 +14,8 @@ Game::~Game( )
 
 void Game::Initialize()
 {
-	m_HitCooldown = 0;
+	m_HitCooldown = 5; 
+	m_AddHealthCooldown = 0;
 	InitNpc();
 	InitPlayer();
 	InitWorld();
@@ -73,6 +74,12 @@ void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
 void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
 {
 	PlayerCheckKeyUp(e);
+
+	if (e.keysym.scancode == SDL_SCANCODE_R && m_pPlayer->IsDead())
+	{
+		Cleanup(); 
+		Initialize();
+	}
 }
 
 void Game::ProcessMouseMotionEvent( const SDL_MouseMotionEvent& e )
@@ -121,32 +128,53 @@ void Game::InitPlayer()
 }
 void Game::UpdatePlayer(float elapsedSec)
 {
-	m_pPlayer->Update(elapsedSec);
-
-	if (m_pHud->GetScore() > 1000)
+	if (!m_pPlayer->IsDead())
 	{
-		m_pPlayer->SetCanMove(false);
+		m_pPlayer->Update(elapsedSec);
+
+		if (m_pHud->GetScore() > 1000)
+		{
+			m_pPlayer->SetCanMove(false);
+		}
+		else
+		{
+			m_pPlayer->SetCanMove(true);
+		}
+
+		if (m_HitCooldown > 5)
+		{
+			for (int i = 0; i < m_pWorld->GetTreeManager()->GetSize(); i++)
+			{
+				if (m_pPlayer->GetPosition().x < m_pWorld->GetTreeManager()->GetPosition(i).x + m_pWorld->GetTreeManager()->GetWidth(i) && m_pPlayer->GetPosition().x + m_pPlayer->GetWidth() > m_pWorld->GetTreeManager()->GetPosition(i).x &&
+					m_pPlayer->GetPosition().y < m_pWorld->GetTreeManager()->GetPosition(i).y + m_pWorld->GetTreeManager()->GetHeight(i) && m_pPlayer->GetPosition().y + m_pPlayer->GetHeight() > m_pWorld->GetTreeManager()->GetPosition(i).y)
+				{
+					m_HitCooldown = 0;
+					m_pPlayer->UpdateHealth(25);
+					m_pSoundManager->PlayCoughingSound();
+				}
+			}
+		}
+		if (m_AddHealthCooldown > 1)
+		{
+			for (int i = 0; i < m_pNpcHealthManager->GetSize(); i++)
+			{
+				if (m_pPlayer->GetPosition().x < m_pNpcHealthManager->GetPosition(i).x + m_pNpcHealthManager->GetWidth(i) && m_pPlayer->GetPosition().x + m_pPlayer->GetWidth() > m_pNpcHealthManager->GetPosition(i).x &&
+					m_pPlayer->GetPosition().y < m_pNpcHealthManager->GetPosition(i).y + m_pNpcHealthManager->GetHeight(i) && m_pPlayer->GetPosition().y + m_pPlayer->GetHeight() > m_pNpcHealthManager->GetPosition(i).y)
+				{
+					m_AddHealthCooldown = 0;
+					m_HitCooldown = 0;
+					m_pPlayer->UpdateHealth(-25);
+				}
+			}
+		}
+
+		m_HitCooldown += elapsedSec;
+		m_AddHealthCooldown += elapsedSec;
 	}
 	else
 	{
-		m_pPlayer->SetCanMove(true);
+		m_pHud->SetDead();
 	}
-
-
-	if (m_HitCooldown > 5)
-	{
-		for (int i = 0; i < m_pWorld->GetTreeManager()->GetSize(); i++)
-		{
-			if (m_pPlayer->GetPosition().x < m_pWorld->GetTreeManager()->GetPosition(i).x + m_pWorld->GetTreeManager()->GetWidth(i) && m_pPlayer->GetPosition().x + m_pPlayer->GetWidth() > m_pWorld->GetTreeManager()->GetPosition(i).x &&
-				m_pPlayer->GetPosition().y < m_pWorld->GetTreeManager()->GetPosition(i).y + m_pWorld->GetTreeManager()->GetHeight(i) && m_pPlayer->GetPosition().y + m_pPlayer->GetHeight() > m_pWorld->GetTreeManager()->GetPosition(i).y)
-			{
-				m_HitCooldown = 0;
-				m_pPlayer->UpdateHealth(25);
-				m_pSoundManager->PlayCoughingSound();
-			}
-		}
-	}
-	m_HitCooldown += elapsedSec;
 }
 void Game::DrawPlayer() const
 {
@@ -254,6 +282,13 @@ void Game::UpdateCamera(float elapsedSec)
 void Game::InitNpc()
 {
 	m_pNpcHealthManager = new NpcHealthManager();
+	const int numHealths{ 10 };
+	for (int i = 0; i < numHealths; i++)
+	{
+		int rnd{ std::rand() % 60001 };
+
+		m_pNpcHealthManager->Add(Point2f(rnd, 82));
+	}
 }
 void Game::UpdateNpc(float elapsedSec)
 {

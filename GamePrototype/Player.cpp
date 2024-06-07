@@ -10,7 +10,9 @@ Player::Player()
 	m_IsOnGround{false},
 	m_IsJumping{false},
 	m_Speed{ 300.f },
-	m_CanMove{true}
+	m_CanMove{true},
+	m_IsVelocityIncreasing{},
+	m_IsDead{}
 {
 
 }
@@ -28,27 +30,35 @@ void Player::Draw() const
 
 void Player::Update(float elapsedSec)
 {
-	if (m_CanMove)
+	if (!m_IsDead)
 	{
+		if (m_Health <= 0)
+		{
+			m_IsDead = true;
+		}
+		if (m_CanMove)
+		{
 #pragma region movement
-		const int mass{ 70 };
-		const float gravity{ -9.81f * mass };
+			const int mass{ 70 };
+			const float gravity{ -9.81f * mass };
 
-		if (!m_IsOnGround)
-		{
-			m_Velocity.y = m_Velocity.y + gravity * elapsedSec;
-			m_Position.y = m_Position.y + m_Velocity.y * elapsedSec;
-		}
-		if (m_Position.y <= 80)
-		{
-			m_Velocity.y = 0;
-			m_IsJumping = false;
-			m_IsOnGround = true;
-		}
-
-		m_Position.x += m_Speed * elapsedSec;
+			if (!m_IsOnGround)
+			{
+				m_Velocity.y = m_Velocity.y + gravity * elapsedSec;
+				m_Position.y = m_Position.y + m_Velocity.y * elapsedSec;
+			}
+			if (m_Position.y <= 80)
+			{
+				m_Velocity.y = 0;
+				m_IsJumping = false;
+				m_IsOnGround = true;
+			}
+			if (m_Position.x < 30090)
+			{
+				m_Position.x += m_Speed * elapsedSec;
+			}
 #pragma endregion movement
-
+		}
 	}
 }
 
@@ -72,6 +82,7 @@ void Player::CheckKeyDown(const SDL_KeyboardEvent& e)
 	if (e.keysym.scancode == SDL_SCANCODE_SPACE)
 	{
 		Jump();
+
 	}
 }
 void Player::CheckKeyUp(const SDL_KeyboardEvent& e)
@@ -85,6 +96,13 @@ void Player::Jump()
 		m_IsOnGround = false;
 		m_IsJumping = true;
 		m_Velocity.y += 400.f;
+	}
+	else
+	{
+		if (m_Velocity.y < 800 && m_Velocity.y > 0)
+		{
+			m_Velocity.y += 25.f;
+		}
 	}
 }
 int Player::GetHealth() const
@@ -109,4 +127,13 @@ float Player::GetWidth() const
 float Player::GetHeight() const
 {
 	return m_pPlayerTexture->GetHeight();
+}
+
+bool Player::IsOnGround() const noexcept
+{
+	return m_IsOnGround;
+}
+bool Player::IsDead() const noexcept
+{
+	return m_IsDead;
 }

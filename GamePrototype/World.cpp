@@ -3,7 +3,7 @@
 
 #include <iostream>
 World::World() :
-	m_pBackground{ new Texture("World/bg.png") },
+	m_pBackground{ new Texture("World/background.png") },
 	m_pPharmacy{new Texture("World/pharmacy.png")},
 	m_BackgroundPosX1{ 0.0f },
 	m_BackgroundPosX2{ m_pBackground->GetWidth() },
@@ -31,7 +31,7 @@ World::World() :
 	}
 	for (int i = 0; i < m_pTreeManager->GetSize(); i++)
 	{
-		for (int p = 0; p < 3; p++)
+		for (int p = 0; p < 10; p++)
 		{
 			Point2f pos{ m_pTreeManager->GetPosition(i) };
 
@@ -63,7 +63,7 @@ void World::Draw() const
 	{
 		m_pBackground->Draw(Point2f{ m_BackgroundPosX2 * i, 0 });
 	}
-	const Point2f buildingPos{ 60000, 82 };
+	const Point2f buildingPos{ 30082, 82 };
 	m_pPharmacy->Draw(buildingPos);
 
 }

@@ -38,6 +38,7 @@ private:
 	NpcHealthManager* m_pNpcHealthManager;
 
 	float m_HitCooldown;
+	float m_AddHealthCooldown;
 
 	// FUNCTIONS
 	void Initialize();

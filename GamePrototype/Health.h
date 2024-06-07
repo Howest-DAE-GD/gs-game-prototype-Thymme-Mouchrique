@@ -16,6 +16,6 @@ public:
 
 private:
 	Point2f m_Position;
-
+	Texture* m_pTexture;
 };
 

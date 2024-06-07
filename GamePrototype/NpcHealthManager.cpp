@@ -60,3 +60,22 @@ void NpcHealthManager::Remove(const int idx)
 	delete m_Npcs[idx];
 	m_Npcs.erase(m_Npcs.begin() + idx);
 }
+
+Point2f NpcHealthManager::GetPosition(const int idx) const noexcept
+{
+	return m_Npcs[idx]->GetPosition();
+}
+float NpcHealthManager::GetWidth(const int idx) const noexcept
+{
+	return m_Npcs[idx]->GetWidth();
+
+}
+float NpcHealthManager::GetHeight(const int idx) const noexcept
+{
+	return m_Npcs[idx]->GetHeight();
+}
+
+int NpcHealthManager::GetSize() const noexcept
+{
+	return m_Npcs.size(); 
+}

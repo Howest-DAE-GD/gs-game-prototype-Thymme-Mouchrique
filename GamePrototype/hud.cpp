@@ -13,7 +13,9 @@ hud::hud(float screenWidth, float screenHeight):
 	m_ScreenHeight{ screenHeight },
 	m_Score{1},
 	m_ScoreTexture{ new Texture(" ", "font/font.ttf", 25, Color4f(1, 1, 1, 1)) },
-	m_TimerTexture{new Texture(" ", "font/font.ttf", 25, Color4f(1, 1, 1, 1))}
+	m_TimerTexture{new Texture(" ", "font/font.ttf", 25, Color4f(1, 1, 1, 1))},
+	m_pGameOverTexture{new Texture("hud/gameover.png")},
+	m_GameOver{}
 {
 
 }
@@ -22,6 +24,7 @@ hud::~hud()
 {
 	delete m_ScoreTexture;
 	delete m_TimerTexture;
+	delete m_pGameOverTexture;
 }
 
 void hud::Draw() const
@@ -40,7 +43,11 @@ void hud::Draw() const
 	//timer
 	//const Point2f timerTexturePosition(m_ScreenWidth / 2 - m_TimerTexture->GetWidth() / 2, m_ScreenHeight - 100);
 	//m_TimerTexture->Draw(timerTexturePosition);
-
+	if (m_GameOver)
+	{
+		const Point2f centerPos{ m_ScreenWidth / 2 - m_pGameOverTexture->GetWidth() / 2, m_ScreenHeight / 2 - m_pGameOverTexture->GetHeight() / 2 };
+		m_pGameOverTexture->Draw(centerPos);
+	}
 }
 void hud::Update(float elapsedSec)
 {
@@ -80,4 +87,9 @@ void hud::UpdateTimer(float elapsedSec)
 float hud::GetScore() const noexcept
 {
 	return m_Score;
+}
+
+void hud::SetDead()
+{
+	m_GameOver = true;
 }

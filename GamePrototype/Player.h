@@ -30,6 +30,8 @@ public:
 	float GetWidth() const;
 	float GetHeight() const;
 	
+	bool IsOnGround() const noexcept;
+	bool IsDead() const noexcept;
 private:
 	void Jump();
 	int m_Health;
@@ -40,7 +42,10 @@ private:
 	bool m_IsJumping;
 	bool m_IsOnGround;
 	bool m_CanMove;
+	bool m_IsVelocityIncreasing;
 	SoundEffect* m_pCoughingSound;
+	bool m_IsDead;
+
 
 };
 

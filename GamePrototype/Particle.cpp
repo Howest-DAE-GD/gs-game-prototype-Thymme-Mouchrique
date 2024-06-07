@@ -5,7 +5,7 @@
 
 Particle::Particle() :
 	m_Position{},
-	m_Radius{float(rand() % 10 + 15)}
+	m_Radius{float(rand() % 1 + 5)}
 {
 
 }
@@ -13,7 +13,7 @@ Particle::Particle(const Point2f& position)
 	:
 	m_Position{ position },
 	m_InitialPosition{ position },
-	m_Radius{ float(rand() % 10 + 5) }
+	m_Radius{ float(rand() % 1 + 5) }
 {
 
 }

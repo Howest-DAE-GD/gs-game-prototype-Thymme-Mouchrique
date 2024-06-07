@@ -13,7 +13,7 @@ public:
 	void Update(float elapsedSec);
 	void SetHealth(const int playerHealth);
 	float GetScore() const noexcept;
-
+	void SetDead();
 private:
 	void UpdateScoreTexture();
 	void UpdateHealthbar();
@@ -24,9 +24,11 @@ private:
 	//TTF_Font m_pFont;
 	Texture* m_ScoreTexture;
 	Texture* m_TimerTexture;
+	Texture* m_pGameOverTexture;
 	float m_Score;
 	int m_PlayerHealth;
 	float m_Timer;
+	bool m_GameOver;
 };
 
 
