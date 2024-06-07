@@ -112,7 +112,10 @@ int Player::GetHealth() const
 
 void Player::UpdateHealth(int healthToSubtract)
 {
-	m_Health -= healthToSubtract;
+	if (m_Health > 0 && m_Health < 100)
+	{
+		m_Health -= healthToSubtract;
+	}
 }
 
 Point2f Player::GetPosition() const

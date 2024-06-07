@@ -37,6 +37,7 @@ private:
 	Camera* m_pCamera;
 	NpcHealthManager* m_pNpcHealthManager;
 
+	bool m_GameWon;
 	float m_HitCooldown;
 	float m_AddHealthCooldown;
 

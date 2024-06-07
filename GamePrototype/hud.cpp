@@ -64,15 +64,18 @@ void hud::UpdateHealthbar()
 
 void hud::UpdateScoreTexture()
 {
-	delete m_ScoreTexture;
-	m_ScoreTexture = new Texture(std::to_string(int(m_Score)), "font/font.ttf", 25, Color4f(1, 1, 1, 1));
+	if (!m_GameOver)
+	{
+		delete m_ScoreTexture;
+		m_ScoreTexture = new Texture(std::to_string(int(m_Score)), "font/font.ttf", 25, Color4f(1, 1, 1, 1));
+
+	}
 }
 
 void hud::SetHealth(const int playerHealth)
 {
 	m_PlayerHealth = playerHealth;
 }
-
 
 void hud::UpdateTimer(float elapsedSec)
 {

@@ -14,7 +14,7 @@ Game::~Game( )
 
 void Game::Initialize()
 {
-	m_HitCooldown = 5; 
+	m_HitCooldown = 2.5f; 
 	m_AddHealthCooldown = 0;
 	InitNpc();
 	InitPlayer();
@@ -64,7 +64,6 @@ void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
 {
 	PlayerCheckKeyDown(e);
 
-
 	if (e.keysym.scancode == SDL_SCANCODE_P)
 	{
 		std::cout << m_pPlayer->GetPosition().x << ", " << m_pPlayer->GetPosition().y << std::endl;;
@@ -75,10 +74,13 @@ void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
 {
 	PlayerCheckKeyUp(e);
 
-	if (e.keysym.scancode == SDL_SCANCODE_R && m_pPlayer->IsDead())
+	if (e.keysym.scancode == SDL_SCANCODE_R)
 	{
-		Cleanup(); 
-		Initialize();
+		if (m_GameWon or !m_pPlayer->IsDead())
+		{
+			Cleanup();
+			Initialize();
+		}
 	}
 }
 
@@ -130,6 +132,10 @@ void Game::UpdatePlayer(float elapsedSec)
 {
 	if (!m_pPlayer->IsDead())
 	{
+		if (m_pHud->GetScore() >= 500)
+		{
+			m_GameWon = true;
+		}
 		m_pPlayer->Update(elapsedSec);
 
 		if (m_pHud->GetScore() > 1000)
@@ -141,7 +147,7 @@ void Game::UpdatePlayer(float elapsedSec)
 			m_pPlayer->SetCanMove(true);
 		}
 
-		if (m_HitCooldown > 5)
+		if (m_HitCooldown >= 3)
 		{
 			for (int i = 0; i < m_pWorld->GetTreeManager()->GetSize(); i++)
 			{
@@ -289,6 +295,8 @@ void Game::InitNpc()
 
 		m_pNpcHealthManager->Add(Point2f(rnd, 82));
 	}
+	const Point2f npcPos{ 30090, 82 };
+	m_pNpcHealthManager->Add(npcPos);
 }
 void Game::UpdateNpc(float elapsedSec)
 {
