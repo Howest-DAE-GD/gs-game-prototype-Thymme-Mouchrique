@@ -1,6 +1,8 @@
 #pragma once
 #include "BaseGame.h"
-
+#include "Camera.h"
+#include "Player.h"
+#include "level.h"
 class Game : public BaseGame
 {
 public:
@@ -28,4 +30,13 @@ private:
 	void Cleanup( );
 	void ClearBackground( ) const;
 
+
+	void InitLevel();
+	void UpdateLevel(float elapedSec);
+	void DrawLevel() const;
+	void DeleteLevel();
+
+	Camera* m_pCamera;
+	Player* m_pPlayer;
+	Level* m_pLevel;
 };

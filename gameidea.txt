@@ -1,0 +1,9 @@
+7. Allergy + Identity Crisis
+Game Title: "Allergy Crisis"
+
+Concept:
+
+Genre: Simple Reaction Game
+Gameplay: Your character has allergies and must quickly identify and avoid allergens that appear on the screen while collecting safe items. Misidentifying items will trigger an allergy crisis and end the game.
+
+Player needs to press with the mouse on items that quickly appear on the screen. If player misidentifies an item for an allergy, he will lose an hp point. 
