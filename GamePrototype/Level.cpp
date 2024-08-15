@@ -2,7 +2,7 @@
 #include "Level.h"
 
 Level::Level() :
-	m_pBackground{ new Texture("Level/background.png") }
+	m_pBackground{ new Texture("Level/background_new.png") }
 {
 
 }

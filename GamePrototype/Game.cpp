@@ -14,29 +14,61 @@ Game::~Game( )
 
 void Game::Initialize()
 {
+	std::cout << "---- Controls ---- " << std::endl;
+	std::cout << "Left Click: Consume item" << std::endl;
+	std::cout << "Right Click: Discard item" << std::endl;
+	timeSinceLastSpawn = 0;
+	spawnCooldown = 5;
+
 	m_pPlayer = new Player(Point2f(250, 0));
 	InitLevel();
+	InitPropManager();
+	InitUI();
 }
 
 void Game::Cleanup( )
 {
 	delete m_pPlayer;
 	DeleteLevel();
+	DeletePropManager();
+	DeleteUI();
 }
 
 void Game::Update( float elapsedSec )
 {
+	timeSinceLastSpawn += elapsedSec;
 	m_pPlayer->Update(elapsedSec);
 	
 	UpdateLevel(elapsedSec);
+	UpdatePropManager(elapsedSec);
+	UpdateUI(elapsedSec);
+
+	if (m_pPropManager->HasClickedAllergy())
+	{
+		m_pGameUI->DecrementHeart();
+	}
+	if (m_pPropManager->HasClickedHealth())
+	{
+		m_pGameUI->IncrementHeart();
+	}
+
+	if (timeSinceLastSpawn > spawnCooldown)
+	{
+		timeSinceLastSpawn = 0;
+		int rnd{ rand() % 2};
+		m_pPropManager->AddProp(bool(rnd));
+	}
+	
 }
 
 void Game::Draw( ) const
 {
 	ClearBackground();
-	
 	DrawLevel();
+
+	DrawPropManager();
 	m_pPlayer->Draw();
+	DrawUI();
 }
 
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
@@ -59,7 +91,7 @@ void Game::ProcessMouseDownEvent( const SDL_MouseButtonEvent& e )
 
 void Game::ProcessMouseUpEvent( const SDL_MouseButtonEvent& e )
 {
-	
+	m_pPropManager->ProcessMouse(e);
 }
 
 void Game::ClearBackground( ) const
@@ -87,3 +119,39 @@ void Game::DeleteLevel()
 	delete m_pLevel;
 }
 #pragma endregion Level
+#pragma region PropManager
+void Game::InitPropManager()
+{
+	m_pPropManager = new PropManager();
+}
+void Game::UpdatePropManager(float elapedSec)
+{
+	m_pPropManager->Update(elapedSec);
+}
+void Game::DrawPropManager() const
+{
+	m_pPropManager->Draw();
+}
+void Game::DeletePropManager()
+{
+	delete m_pPropManager;
+}
+#pragma endregion PropManager
+#pragma region UI
+void Game::InitUI()
+{
+	m_pGameUI = new GameUI(GetViewPort().width, GetViewPort().height);
+}
+void Game::UpdateUI(float elapsedSec)
+{
+	m_pGameUI->Update(elapsedSec);
+}
+void Game::DrawUI() const
+{
+	m_pGameUI->Draw();
+}
+void Game::DeleteUI()
+{
+	delete m_pGameUI;
+}
+#pragma endregion UI

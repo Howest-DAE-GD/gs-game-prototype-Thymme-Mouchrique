@@ -3,6 +3,9 @@
 #include "Camera.h"
 #include "Player.h"
 #include "level.h"
+#include "PropManager.h"
+#include "GameUI.h"
+
 class Game : public BaseGame
 {
 public:
@@ -36,7 +39,22 @@ private:
 	void DrawLevel() const;
 	void DeleteLevel();
 
+	void InitPropManager();
+	void UpdatePropManager(float elapedSec);
+	void DrawPropManager() const;
+	void DeletePropManager();
+
+	void InitUI();
+	void UpdateUI(float elapedSec);
+	void DrawUI() const;
+	void DeleteUI();
+
 	Camera* m_pCamera;
 	Player* m_pPlayer;
 	Level* m_pLevel;
+	PropManager* m_pPropManager;
+	GameUI* m_pGameUI;
+
+	float timeSinceLastSpawn;
+	float spawnCooldown;
 };

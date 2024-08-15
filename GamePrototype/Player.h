@@ -11,7 +11,6 @@ public:
 	void Draw() const;
 
 	Point2f GetPosition() const noexcept;
-	void IncreaseSpeed(float speedToAdd);
 
 	float GetWidth() const noexcept;
 	float GetHeight() const noexcept;

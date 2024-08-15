@@ -1,7 +1,6 @@
 #include "pch.h"
 #include <ctime>
 #include "Game.h"
-
 void StartHeapControl();
 void DumpMemoryLeaks();
 
@@ -11,7 +10,7 @@ int SDL_main(int argv, char** args)
 
 	StartHeapControl();
 
-	Game* pGame{ new Game{ Window{ "Allergy crisis, - 1DAE28", 600 , 300} } };
+	Game* pGame{ new Game{ Window{ "Allergy crisis, - 1DAE28", 600 , 400} } };
 	pGame->Run();
 	delete pGame;
 
