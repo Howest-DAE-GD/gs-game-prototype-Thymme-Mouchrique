@@ -17,7 +17,7 @@ void Game::Initialize()
 	std::cout << "---- Controls ---- " << std::endl;
 	std::cout << "Left Click: Consume item" << std::endl;
 	std::cout << "Right Click: Discard item" << std::endl;
-	timeSinceLastSpawn = 0;
+	timeSinceLastSpawn = 4;
 	spawnCooldown = 5;
 
 	m_pPlayer = new Player(Point2f(250, 0));
@@ -55,10 +55,16 @@ void Game::Update( float elapsedSec )
 	if (timeSinceLastSpawn > spawnCooldown)
 	{
 		timeSinceLastSpawn = 0;
-		int rnd{ rand() % 2};
-		m_pPropManager->AddProp(bool(rnd));
+		int rnd{ rand() % 4 + 1};
+		if (rnd == 1 || rnd == 2 || rnd == 3)
+		{
+			m_pPropManager->AddProp(false);
+		}
+		else
+		{
+			m_pPropManager->AddProp(true);
+		}
 	}
-	
 }
 
 void Game::Draw( ) const

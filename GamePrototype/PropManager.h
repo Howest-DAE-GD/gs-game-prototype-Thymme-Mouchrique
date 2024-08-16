@@ -2,10 +2,7 @@
 #include "Texture.h"
 #include "vector"
 #include "iostream"
-enum class PropType {
-	Allergy,
-	Healing
-};
+#include "Prop.h"
 
 class PropManager
 {
@@ -42,9 +39,21 @@ private:
 	float m_Speed;
 
 	//i know this approach is horrible lol
-	std::vector<Texture*> m_ActiveProps;
-	std::vector<Point2f> m_Positions;
-	std::vector<PropType> m_PropTypes;
+	//std::vector<Texture*> m_ActiveProps;
+	//std::vector<Point2f> m_Positions;
+	//std::vector<PropType> m_PropTypes;
+
+	//new approach
+	std::vector<Prop*> m_ActiveProps;
+	std::string m_NutsPath;
+	std::string m_PollenPath;
+	std::string m_MilkPath;
+	std::string m_CatPath;
+	std::string m_PillPath;
+	std::string m_NeedlePath;
+	std::string m_MedkitPath;
+
+
 
 	//since player pos is fixed
 	const Point2f m_PlayerPos;
