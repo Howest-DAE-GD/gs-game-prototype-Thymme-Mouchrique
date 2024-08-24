@@ -55,6 +55,12 @@ private:
 	PropManager* m_pPropManager;
 	GameUI* m_pGameUI;
 
-	float timeSinceLastSpawn;
-	float spawnCooldown;
+	float m_TimeSinceLastSpawn;
+	float m_SpawnCooldown;
+
+	bool m_HasProcessedScore10;
+	bool m_HasProcessedScore20;
+	bool m_HasProcessedScore30;
+	bool m_HasProcessedScore40;
+
 };

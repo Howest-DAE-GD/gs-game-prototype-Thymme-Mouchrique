@@ -52,6 +52,10 @@ public:
 		return m_Viewport;
 	}
 	bool m_Quit;
+	Window GetWindow() const noexcept
+	{
+		return m_Window;
+	}
 
 private:
 	// DATA MEMBERS

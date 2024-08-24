@@ -16,50 +16,60 @@ public:
 	void AddProp(bool healingItem);
 	void DeleteProp(int idx);
 
-	void ChangeSpeed(float speedToAdd);
-
+	//base speed is 75
+	void ChangePropSpeed(float speedToAdd);
 
 	void ProcessMouse(const SDL_MouseButtonEvent& e);
 	
 	int GetPropsNumber() const noexcept;
 	bool HasClickedHealth();
 	bool HasClickedAllergy();
+	bool HasDiscardedAllergy();
+	bool HasConsumedFood();
 
+	void UpdateScore(int score);
+	void AddRandomAllergy();
 private:
-	//allergys
-	Texture* m_pNuts;
-	Texture* m_pCat;
-	Texture* m_pPollen;
-	Texture* m_pMilk;
-
 	//healing
-	Texture* m_pNeedle;
-	Texture* m_pPill;
-	Texture* m_pMedkit;
 	float m_Speed;
 
-	//i know this approach is horrible lol
-	//std::vector<Texture*> m_ActiveProps;
-	//std::vector<Point2f> m_Positions;
-	//std::vector<PropType> m_PropTypes;
-
-	//new approach
 	std::vector<Prop*> m_ActiveProps;
+	std::vector<std::string> m_ActiveAllergies;
+
+	//nuts
 	std::string m_NutsPath;
+
+	//pollen
 	std::string m_PollenPath;
+	std::string m_GrassPath;
+	std::string m_TreePath;
+
+	//lactose
 	std::string m_MilkPath;
+	std::string m_CheesePath;
+	std::string m_ButterPath;
+
+	//pet allergy
 	std::string m_CatPath;
+	std::string m_DogPath;
+	std::string m_HamsterPath;
+
+	//healing items
 	std::string m_PillPath;
 	std::string m_NeedlePath;
 	std::string m_MedkitPath;
 
-
-
 	//since player pos is fixed
 	const Point2f m_PlayerPos;
 
-	bool clickedHealth;
-	bool clickedAllergy;
+	bool m_ClickedHealth;
+	bool m_ClickedAllergy;
+	bool m_DiscardedAllergy;
+	bool m_ConsumedFood;
 
+	//0: lactose intollerant, 1: Pet allergy, 2: Floral sensitivity, 3: nut allergy
+	int m_RndGroup;
+
+	int m_Score;
 };
 
