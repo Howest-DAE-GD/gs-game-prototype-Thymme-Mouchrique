@@ -16,14 +16,15 @@ PropManager::PropManager() :
 	m_PillPath{ "Safe items/pill.png"},
 	m_MedkitPath{ "Safe items/medkit.png"},
 	m_ActiveProps{},
-	m_Speed{75},
+	m_Speed{85},
 	m_PlayerPos{ 250, 0 },
 	m_DiscardedAllergy{},
 	m_RndGroup{rand() % 4},
 	m_ClickedAllergy{},
 	m_ClickedHealth{},
 	m_ConsumedFood{},
-	m_Score{}
+	m_Score{},
+	m_GameUI{}
 {
 	std::cout << std::endl;
 }
@@ -113,16 +114,16 @@ void PropManager::AddProp(bool healingItem)
 			switch (rndHardObjects)
 			{
 			case 1:
-				m_ActiveProps.push_back(new Prop("Allergens/medium/chocolate.png", "lactose", PropType::Allergy, Point2f(rand() % 600, 450)));
+				m_ActiveProps.push_back(new Prop("Allergens/medium/chocolate.png", "milk", PropType::Allergy, Point2f(rand() % 600, 450)));
 				break;
 			case 2:
-				m_ActiveProps.push_back(new Prop("Allergens/medium/icecream.png", "lactose", PropType::Allergy, Point2f(rand() % 600, 450)));
+				m_ActiveProps.push_back(new Prop("Allergens/medium/icecream.png", "milk", PropType::Allergy, Point2f(rand() % 600, 450)));
 				break;
 			case 3:
-				m_ActiveProps.push_back(new Prop("Allergens/medium/herbal_tea.png", "floral", PropType::Allergy, Point2f(rand() % 600, 450)));
+				m_ActiveProps.push_back(new Prop("Allergens/medium/herbal_tea.png", "tree", PropType::Allergy, Point2f(rand() % 600, 450)));
 				break;
 			case 4:
-				m_ActiveProps.push_back(new Prop("Allergens/medium/sweater.png", "pet", PropType::Allergy, Point2f(rand() % 600, 450)));
+				m_ActiveProps.push_back(new Prop("Allergens/medium/sweater.png", "cat", PropType::Allergy, Point2f(rand() % 600, 450)));
 				break;
 			default:
 				break;
@@ -130,46 +131,103 @@ void PropManager::AddProp(bool healingItem)
 		}
 		else
 		{
-			int rnd{ rand() % 12 + 1 };
-			switch (rnd)
+			int rnd{ rand() % 13 + 1 };
+			int rndAllergyOrNot{ rand() % 5 + 1 };
+			if (rndAllergyOrNot == 1)
 			{
-			case 1:
-				m_ActiveProps.push_back(new Prop(m_MilkPath, "milk", PropType::Allergy, Point2f(rand() % 600, 450)));
-				break;
-			case 2:
-				m_ActiveProps.push_back(new Prop(m_PollenPath, "pollen", PropType::Allergy, Point2f(rand() % 600, 450)));
-				break;
-			case 3:
-				m_ActiveProps.push_back(new Prop(m_NutsPath, "nuts", PropType::Allergy, Point2f(rand() % 600, 450)));
-				break;
-			case 4:
-				m_ActiveProps.push_back(new Prop(m_CatPath, "cat", PropType::Allergy, Point2f(rand() % 600, 450)));
-				break;
-			case 5:
-				m_ActiveProps.push_back(new Prop(m_CheesePath, "cheese", PropType::Allergy, Point2f(rand() % 600, 450)));
-				break;
-			case 6:
-				m_ActiveProps.push_back(new Prop(m_ButterPath, "butter", PropType::Allergy, Point2f(rand() % 600, 450)));
-				break;
-			case 7:
-				m_ActiveProps.push_back(new Prop(m_DogPath, "dog", PropType::Allergy, Point2f(rand() % 600, 450)));
-				break;
-			case 8:
-				m_ActiveProps.push_back(new Prop(m_HamsterPath, "hamster", PropType::Allergy, Point2f(rand() % 600, 450)));
-				break;
-			case 9:
-				m_ActiveProps.push_back(new Prop(m_GrassPath, "grass", PropType::Allergy, Point2f(rand() % 600, 450)));
-				break;
-			case 10:
-				m_ActiveProps.push_back(new Prop(m_TreePath, "tree", PropType::Allergy, Point2f(rand() % 600, 450)));
-				break;
-			case 11:
-				m_ActiveProps.push_back(new Prop("Allergens/easy/nuts2.png", "nuts", PropType::Allergy, Point2f(rand() % 600, 450)));
-				break;
-			case 12:
-				m_ActiveProps.push_back(new Prop("Allergens/easy/nuts3.png", "nuts", PropType::Allergy, Point2f(rand() % 600, 450)));
-			default:
-				break;
+				int rndIndex{ int(rand() % m_ActiveAllergies.size()) };
+
+				if (m_ActiveAllergies[rndIndex] == "milk")
+				{
+					m_ActiveProps.push_back(new Prop(m_MilkPath, "milk", PropType::Allergy, Point2f(rand() % 600, 450)));
+					return;
+				}
+				else if (m_ActiveAllergies[rndIndex] == "pollen")
+				{
+					m_ActiveProps.push_back(new Prop(m_PollenPath, "pollen", PropType::Allergy, Point2f(rand() % 600, 450)));
+				}
+				else if (m_ActiveAllergies[rndIndex] == "nuts")
+				{
+					m_ActiveProps.push_back(new Prop(m_NutsPath, "nuts", PropType::Allergy, Point2f(rand() % 600, 450)));
+				}
+				else if (m_ActiveAllergies[rndIndex] == "cat")
+				{
+					m_ActiveProps.push_back(new Prop(m_CatPath, "cat", PropType::Allergy, Point2f(rand() % 600, 450)));
+
+				}
+				else if (m_ActiveAllergies[rndIndex] == "cheese")
+				{
+					m_ActiveProps.push_back(new Prop(m_CheesePath, "cheese", PropType::Allergy, Point2f(rand() % 600, 450)));
+				}
+				else if (m_ActiveAllergies[rndIndex] == "butter")
+				{
+					m_ActiveProps.push_back(new Prop(m_ButterPath, "butter", PropType::Allergy, Point2f(rand() % 600, 450)));
+
+				}
+				else if (m_ActiveAllergies[rndIndex] == "dog")
+				{
+					m_ActiveProps.push_back(new Prop(m_DogPath, "dog", PropType::Allergy, Point2f(rand() % 600, 450)));
+
+				}
+				else if (m_ActiveAllergies[rndIndex] == "hamster")
+				{
+					m_ActiveProps.push_back(new Prop(m_HamsterPath, "hamster", PropType::Allergy, Point2f(rand() % 600, 450)));
+				}
+				else if (m_ActiveAllergies[rndIndex] == "grass")
+				{
+					m_ActiveProps.push_back(new Prop(m_GrassPath, "grass", PropType::Allergy, Point2f(rand() % 600, 450)));
+				}
+				else if (m_ActiveAllergies[rndIndex] == "tree")
+				{
+					m_ActiveProps.push_back(new Prop(m_TreePath, "tree", PropType::Allergy, Point2f(rand() % 600, 450)));
+				}
+			}
+			else
+			{
+				switch (rnd)
+				{
+				case 1:
+					m_ActiveProps.push_back(new Prop(m_MilkPath, "milk", PropType::Allergy, Point2f(rand() % 600, 450)));
+					break;
+				case 2:
+					m_ActiveProps.push_back(new Prop(m_PollenPath, "pollen", PropType::Allergy, Point2f(rand() % 600, 450)));
+					break;
+				case 3:
+					m_ActiveProps.push_back(new Prop(m_NutsPath, "nuts", PropType::Allergy, Point2f(rand() % 600, 450)));
+					break;
+				case 4:
+					m_ActiveProps.push_back(new Prop(m_CatPath, "cat", PropType::Allergy, Point2f(rand() % 600, 450)));
+					break;
+				case 5:
+					m_ActiveProps.push_back(new Prop(m_CheesePath, "cheese", PropType::Allergy, Point2f(rand() % 600, 450)));
+					break;
+				case 6:
+					m_ActiveProps.push_back(new Prop(m_ButterPath, "butter", PropType::Allergy, Point2f(rand() % 600, 450)));
+					break;
+				case 7:
+					m_ActiveProps.push_back(new Prop(m_DogPath, "dog", PropType::Allergy, Point2f(rand() % 600, 450)));
+					break;
+				case 8:
+					m_ActiveProps.push_back(new Prop(m_HamsterPath, "hamster", PropType::Allergy, Point2f(rand() % 600, 450)));
+					break;
+				case 9:
+					m_ActiveProps.push_back(new Prop(m_GrassPath, "grass", PropType::Allergy, Point2f(rand() % 600, 450)));
+					break;
+				case 10:
+					m_ActiveProps.push_back(new Prop(m_TreePath, "tree", PropType::Allergy, Point2f(rand() % 600, 450)));
+					break;
+				case 11:
+					m_ActiveProps.push_back(new Prop("Allergens/easy/nuts2.png", "nuts", PropType::Allergy, Point2f(rand() % 600, 450)));
+					break;
+				case 12:
+					m_ActiveProps.push_back(new Prop("Allergens/easy/nuts3.png", "nuts", PropType::Allergy, Point2f(rand() % 600, 450)));
+					break;
+				case 13:
+					m_ActiveProps.push_back(new Prop("Allergens/easy/dustmites.png", "mites", PropType::Allergy, Point2f(rand() % 600, 450)));
+					break;
+				default:
+					break;
+				}
 			}
 		}
 	}
@@ -180,9 +238,9 @@ void PropManager::DeleteProp(int idx)
 	m_ActiveProps.erase(m_ActiveProps.begin() + idx);
 }
 
-void PropManager::ChangePropSpeed(float speedToAdd)
+void PropManager::AddPropSpeed(float speedToAdd)
 {
-	m_Speed = speedToAdd;
+	m_Speed += speedToAdd;
 }
 
 void PropManager::ProcessMouse(const SDL_MouseButtonEvent& e)
@@ -279,7 +337,7 @@ void PropManager::UpdateScore(int score)
 void PropManager::AddRandomAllergy()
 {
 	const std::vector<std::string> possibleAllergies = {
-		"nuts", "pollen", "grass", "tree", "milk", "cheese", "butter", "cat", "dog", "hamster"
+		"nuts", "pollen", "grass", "tree", "milk", "cheese", "butter", "cat", "dog", "hamster", "mites"
 	};
 
 	if (m_ActiveAllergies.size() < possibleAllergies.size())
@@ -288,7 +346,11 @@ void PropManager::AddRandomAllergy()
 		m_ActiveAllergies.push_back(possibleAllergies[rnd]);
 
 		std::cout << "New Allergy Activated: " << possibleAllergies[rnd] << std::endl;
+		m_GameUI->ShowNewAllergy(possibleAllergies[rnd]);
 	}
 
-
+}
+void PropManager::LinkGameUI(GameUI* gameUI)
+{
+	m_GameUI = gameUI;
 }

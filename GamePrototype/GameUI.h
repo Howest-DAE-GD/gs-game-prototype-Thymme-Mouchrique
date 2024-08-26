@@ -1,5 +1,6 @@
 #pragma once
 #include "texture.h"
+#include "iostream"
 class GameUI
 {
 public:
@@ -21,12 +22,18 @@ public:
 	bool IsGameOver() const noexcept;
 	void SetGameOver();
 
+	void ShowNewAllergy(const std::string allergyName);
+	bool IsShowingAllergy();
+
 private:
 	const float m_ScreenWidth;
 	const float m_ScreenHeight;
 
 	Texture* m_pScoreTexture;
 	Texture* m_pHeartTexture;
+	Texture* m_pNewAllergyTexture;
+	Texture* m_pGameOverTexture;
+
 
 	int m_NumHearts;
 	const int m_NumMaxHearts;
@@ -35,6 +42,8 @@ private:
 
 	bool m_IsGameOver;
 
-
+	bool m_IsShowingAllergy;
+	float m_TimeElapsedSinceStartShowingAllergy;
+	std::string showAllergyName;
 };
 

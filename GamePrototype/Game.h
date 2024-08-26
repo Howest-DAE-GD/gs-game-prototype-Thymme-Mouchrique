@@ -48,6 +48,8 @@ private:
 	void UpdateUI(float elapedSec);
 	void DrawUI() const;
 	void DeleteUI();
+	GameUI* GetGameUI();
+
 
 	Camera* m_pCamera;
 	Player* m_pPlayer;
@@ -58,9 +60,8 @@ private:
 	float m_TimeSinceLastSpawn;
 	float m_SpawnCooldown;
 
+	//necessary to prevent loops
+	bool m_HasProcessedScore3;
 	bool m_HasProcessedScore10;
 	bool m_HasProcessedScore20;
-	bool m_HasProcessedScore30;
-	bool m_HasProcessedScore40;
-
 };

@@ -3,6 +3,7 @@
 #include "vector"
 #include "iostream"
 #include "Prop.h"
+#include "GameUI.h"
 
 class PropManager
 {
@@ -17,7 +18,7 @@ public:
 	void DeleteProp(int idx);
 
 	//base speed is 75
-	void ChangePropSpeed(float speedToAdd);
+	void AddPropSpeed(float speedToAdd);
 
 	void ProcessMouse(const SDL_MouseButtonEvent& e);
 	
@@ -27,12 +28,16 @@ public:
 	bool HasDiscardedAllergy();
 	bool HasConsumedFood();
 
+
 	void UpdateScore(int score);
 	void AddRandomAllergy();
+
+	void LinkGameUI(GameUI* gameUI);
+
 private:
 	//healing
 	float m_Speed;
-
+	GameUI* m_GameUI;
 	std::vector<Prop*> m_ActiveProps;
 	std::vector<std::string> m_ActiveAllergies;
 

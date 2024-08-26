@@ -6,9 +6,14 @@ GameUI::GameUI(float screenWidth, float screenHeight) :
 	m_pHeartTexture{ new Texture("UI/heart.png") },
 	m_pScoreTexture{new Texture("0", "UI/font.ttf", 25, Color4f(0, 0, 0, 1))},
 	m_NumHearts{ 3 },
-	m_NumMaxHearts{5},
+	m_NumMaxHearts{3},
 	m_Score{0},
-	m_IsGameOver{false}
+	m_IsGameOver{false},
+	m_IsShowingAllergy{false},
+	m_TimeElapsedSinceStartShowingAllergy{},
+	showAllergyName{},
+	m_pNewAllergyTexture{},
+	m_pGameOverTexture{new Texture("ui/gameover.png")}
 {
 
 }
@@ -16,12 +21,28 @@ GameUI::~GameUI()
 {
 	delete m_pHeartTexture;
 	delete m_pScoreTexture;
+	delete m_pNewAllergyTexture;
+	delete m_pGameOverTexture;
 }
 
 void GameUI::Update(float elapsedSec)
 {
 	delete m_pScoreTexture;
 	m_pScoreTexture = new Texture(std::to_string(m_Score), "UI/font.ttf", 25, Color4f(0, 0, 0, 1));
+
+	if (m_IsShowingAllergy)
+	{
+		m_TimeElapsedSinceStartShowingAllergy += elapsedSec;
+		if (m_TimeElapsedSinceStartShowingAllergy >= 5)
+		{
+			m_TimeElapsedSinceStartShowingAllergy = 0;
+			m_IsShowingAllergy = false;
+		}
+	}
+	if (m_NumHearts == 0)
+	{
+		SetGameOver();
+	}
 }
 void GameUI::Draw() const
 {
@@ -36,10 +57,18 @@ void GameUI::Draw() const
 
 		const Point2f rightUpperCorner{ m_ScreenWidth - m_pScoreTexture->GetWidth() - 10, m_ScreenHeight - m_pScoreTexture->GetHeight() - 10 };
 		m_pScoreTexture->Draw(rightUpperCorner);
+		
+		if (m_IsShowingAllergy)
+		{
+			const Point2f center{ m_ScreenWidth / 2 - m_pNewAllergyTexture->GetWidth() / 2, m_ScreenHeight / 2 - m_pNewAllergyTexture->GetHeight() / 2 };
+			m_pNewAllergyTexture->Draw(center);
+		}
+		
 	}
 	else
 	{
-
+		const Point2f center{ m_ScreenWidth / 2 - m_pGameOverTexture->GetWidth() / 2, m_ScreenHeight / 2 - m_pGameOverTexture->GetHeight() / 2 };
+		m_pGameOverTexture->Draw(center);
 	}
 }
 
@@ -85,5 +114,18 @@ bool GameUI::IsGameOver() const noexcept
 }
 void GameUI::SetGameOver()
 {
+	std::cout << std::endl << "Game over! press ENTER to restart" << std::endl;
 	m_IsGameOver = true;
+}
+
+void GameUI::ShowNewAllergy(const std::string allergyName)
+{
+	showAllergyName = allergyName;
+	delete m_pNewAllergyTexture;
+	m_pNewAllergyTexture = new Texture("new allergy: " + allergyName, "UI/font.ttf", 40, Color4f{0.f, 0.f, 0.f, 1.f});
+	m_IsShowingAllergy = true;
+}
+bool GameUI::IsShowingAllergy()
+{
+	return m_IsShowingAllergy;
 }

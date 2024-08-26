@@ -42,9 +42,25 @@ void Prop::Draw() const
 
 	utils::SetColor(Color4f(0.f, 0.f, 0.f, 1.f));
 
-	const Rectf rect{ m_Position.x - m_pPropTexture->GetWidth() / 2, m_Position.y - m_pPropTexture->GetHeight() / 2, 70, 70};
-	
-	utils::DrawRect(rect);
+	// Retrieve the dimensions of the texture
+	float textureWidth{ m_pPropTexture->GetWidth() };
+	float textureHeight{ m_pPropTexture->GetHeight()};
+
+	// Calculate the center of the object
+	float objectCenterX{ m_Position.x + textureWidth / 2 };
+	float objectCenterY{ m_Position.y + textureHeight / 2 };
+
+	// Define the size of the cube/rectangle to match the texture size
+	float cubeWidth{ textureWidth + 25 };
+	float cubeHeight{textureHeight + 25 };
+
+	// Calculate the top-left corner of the cube/rectangle
+	float cubeX{ objectCenterX - cubeWidth / 2 };
+	float cubeY{ objectCenterY - cubeHeight / 2 };
+
+	// Define the Rectf for the cube/rectangle
+	Rectf cubeRect{ cubeX, cubeY, cubeWidth, cubeHeight };
+	//utils::DrawRect(cubeRect);
 }
 
 PropType Prop::GetPropType() const noexcept

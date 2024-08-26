@@ -24,19 +24,18 @@ void Game::Initialize()
 	std::cout << "You lose a heart if you bite into something that makes your allergies go wild!" << std::endl;
 
 	m_TimeSinceLastSpawn = 2.5;
-	m_SpawnCooldown = 5;
+	m_SpawnCooldown = 4;
 
 	m_pPlayer = new Player(Point2f(250, 0));
 	InitLevel();
 	InitPropManager();
 	InitUI();
 
+	m_pPropManager->LinkGameUI(Game::GetGameUI());
 	m_pPropManager->AddRandomAllergy();
-
-	m_HasProcessedScore10 = false;
-	m_HasProcessedScore20 = false;
-	m_HasProcessedScore30 = false;
-	m_HasProcessedScore40 = false;
+	m_HasProcessedScore10 = true;
+	m_HasProcessedScore20 = true;
+	m_HasProcessedScore3 = true;
 }
 
 void Game::Cleanup( )
@@ -49,78 +48,84 @@ void Game::Cleanup( )
 
 void Game::Update( float elapsedSec )
 {
-	m_TimeSinceLastSpawn += elapsedSec;
-	m_pPlayer->Update(elapsedSec);
-	
-	UpdateLevel(elapsedSec);
-	UpdatePropManager(elapsedSec);
-	UpdateUI(elapsedSec);
+	if (!m_pGameUI->IsGameOver())
+	{
+		m_TimeSinceLastSpawn += elapsedSec;
+		m_pPlayer->Update(elapsedSec);
 
-	if (m_pPropManager->HasClickedAllergy())
-	{
-		m_pGameUI->DecrementHeart();
-	}
-	if (m_pPropManager->HasClickedHealth())
-	{
-		m_pGameUI->IncrementHeart();
-	}
-	if (m_pPropManager->HasDiscardedAllergy() || m_pPropManager->HasConsumedFood())
-	{
-		m_pGameUI->IncrementScore();
-	}
-	if (m_TimeSinceLastSpawn > m_SpawnCooldown)
-	{
-		m_TimeSinceLastSpawn = 0;
-		int rnd{ rand() % 10 + 1};
-		if (rnd == 10)
+		UpdateLevel(elapsedSec);
+		UpdatePropManager(elapsedSec);
+		UpdateUI(elapsedSec);
+		m_pPropManager->UpdateScore(m_pGameUI->GetScore());
+		if (m_pPropManager->HasClickedAllergy())
 		{
-			m_pPropManager->AddProp(true);
+			m_pGameUI->DecrementHeart();
 		}
-		else
+		if (m_pPropManager->HasClickedHealth())
 		{
-			m_pPropManager->AddProp(false);
+			m_pGameUI->IncrementHeart();
+		}
+		if (m_pPropManager->HasDiscardedAllergy() || m_pPropManager->HasConsumedFood())
+		{
+			m_pGameUI->IncrementScore();
+		}
+		if (m_TimeSinceLastSpawn > m_SpawnCooldown && !m_pGameUI->IsShowingAllergy())
+		{
+			m_TimeSinceLastSpawn = 0;
+			int rnd{ rand() % 10 + 1 };
+			if (rnd == 10)
+			{
+				m_pPropManager->AddProp(true);
+			}
+			else
+			{
+				m_pPropManager->AddProp(false);
+			}
+		}
+		
+		if (m_pGameUI->GetScore() % 3 == 0 && !m_HasProcessedScore3)
+		{
+			//every 3 points
+
+			if (m_SpawnCooldown > 0.75)
+			{
+				m_SpawnCooldown *= 0.90;
+			}
+			else
+			{
+				m_SpawnCooldown = 0.75;
+			}
+			std::cout << m_SpawnCooldown << std::endl;
+			m_HasProcessedScore3 = true;
+
+		}
+		if (m_pGameUI->GetScore() % 20 == 0 && !m_HasProcessedScore20)
+		{
+			//every 25 points
+			m_pPropManager->AddRandomAllergy();
+			m_HasProcessedScore20 = true;
+		}
+
+		else if (m_pGameUI->GetScore() % 10 == 0 && !m_HasProcessedScore10)
+		{
+			//every 10 points
+			m_pPropManager->AddPropSpeed(25);
+			m_HasProcessedScore10 = true;
+		}
+		if (m_pGameUI->GetScore() % 20 != 0)
+		{
+			m_HasProcessedScore20 = false;
+		}
+
+		if (m_pGameUI->GetScore() % 10 != 0)
+		{
+			m_HasProcessedScore10 = false;
+		}
+		if (m_pGameUI->GetScore() % 3 != 0)
+		{
+			m_HasProcessedScore3 = false;
 		}
 	}
-	
-	if (m_pGameUI->GetScore() == 5)
-	{
-		m_SpawnCooldown = 3;
-		m_pPropManager->ChangePropSpeed(100);
-	}
-	if (m_pGameUI->GetScore() == 10 && !m_HasProcessedScore10)
-	{
-		m_SpawnCooldown = 2.5;
-		m_pPropManager->ChangePropSpeed(125);
-		m_pPropManager->AddRandomAllergy();
-		m_HasProcessedScore10 = true;
-	}
-	if (m_pGameUI->GetScore() == 15)
-	{
-		m_SpawnCooldown = 2;
-		m_pPropManager->ChangePropSpeed(150);
-	}
-	if (m_pGameUI->GetScore() == 20 && !m_HasProcessedScore20)
-	{
-		m_SpawnCooldown = 1.5;
-		m_pPropManager->ChangePropSpeed(175);
-		m_pPropManager->AddRandomAllergy();
-		m_HasProcessedScore20 = true;
-	}
-	if (m_pGameUI->GetScore() == 30 && !m_HasProcessedScore30)
-	{
-		m_SpawnCooldown = 1;
-		m_pPropManager->ChangePropSpeed(200);
-		m_pPropManager->AddRandomAllergy();
-		m_HasProcessedScore30 = true;
-	}
-	if (m_pGameUI->GetScore() == 40 && !m_HasProcessedScore40)
-	{
-		m_SpawnCooldown = 0.5;
-		m_pPropManager->ChangePropSpeed(225);
-		m_pPropManager->AddRandomAllergy();
-		m_HasProcessedScore40 = true;
-	}
-	m_pPropManager->UpdateScore(m_pGameUI->GetScore());
 }
 
 void Game::Draw( ) const
@@ -136,6 +141,12 @@ void Game::Draw( ) const
 
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
 {
+	if (e.keysym.scancode == SDL_SCANCODE_RETURN && m_pGameUI->IsGameOver())
+	{
+		system("cls");
+		Cleanup();
+		Initialize();
+	}
 }
 
 void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
@@ -215,5 +226,9 @@ void Game::DrawUI() const
 void Game::DeleteUI()
 {
 	delete m_pGameUI;
+}
+GameUI* Game::GetGameUI()
+{
+	return m_pGameUI;
 }
 #pragma endregion UI
