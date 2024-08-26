@@ -25,6 +25,9 @@ public:
 	void ShowNewAllergy(const std::string allergyName);
 	bool IsShowingAllergy();
 
+	void ChangeShowingTime(float NumToAdd);
+	float GetShowingTime() const noexcept;
+
 private:
 	const float m_ScreenWidth;
 	const float m_ScreenHeight;
@@ -44,6 +47,8 @@ private:
 
 	bool m_IsShowingAllergy;
 	float m_TimeElapsedSinceStartShowingAllergy;
-	std::string showAllergyName;
+	float m_ShowingAllergyMaxTimeShowing;
+	
+	std::string m_showAllergyName;
 };
 

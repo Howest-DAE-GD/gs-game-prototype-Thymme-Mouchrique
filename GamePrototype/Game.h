@@ -5,7 +5,7 @@
 #include "level.h"
 #include "PropManager.h"
 #include "GameUI.h"
-
+#include "SoundStream.h"
 class Game : public BaseGame
 {
 public:
@@ -50,7 +50,7 @@ private:
 	void DeleteUI();
 	GameUI* GetGameUI();
 
-
+	SoundStream* m_pBgMusic;
 	Camera* m_pCamera;
 	Player* m_pPlayer;
 	Level* m_pLevel;

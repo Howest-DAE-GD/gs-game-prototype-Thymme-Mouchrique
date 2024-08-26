@@ -30,6 +30,10 @@ void Game::Initialize()
 	InitLevel();
 	InitPropManager();
 	InitUI();
+	m_pBgMusic = new SoundStream("sound/backgroundmusic.mp3");
+
+	m_pBgMusic->SetVolume(1);
+	m_pBgMusic->Play(true);
 
 	m_pPropManager->LinkGameUI(Game::GetGameUI());
 	m_pPropManager->AddRandomAllergy();
@@ -44,6 +48,7 @@ void Game::Cleanup( )
 	DeleteLevel();
 	DeletePropManager();
 	DeleteUI();
+	delete m_pBgMusic;
 }
 
 void Game::Update( float elapsedSec )
@@ -95,7 +100,6 @@ void Game::Update( float elapsedSec )
 			{
 				m_SpawnCooldown = 0.75;
 			}
-			std::cout << m_SpawnCooldown << std::endl;
 			m_HasProcessedScore3 = true;
 
 		}
@@ -103,13 +107,20 @@ void Game::Update( float elapsedSec )
 		{
 			//every 25 points
 			m_pPropManager->AddRandomAllergy();
-			m_HasProcessedScore20 = true;
+			if (m_pGameUI->GetShowingTime() > 2)
+			{
+				m_pGameUI->ChangeShowingTime(-1);
+				m_HasProcessedScore20 = true;
+			}
 		}
 
 		else if (m_pGameUI->GetScore() % 10 == 0 && !m_HasProcessedScore10)
 		{
 			//every 10 points
-			m_pPropManager->AddPropSpeed(25);
+			if (m_pPropManager->GetSpeed() < 275)
+			{
+				m_pPropManager->AddPropSpeed(25);
+			}
 			m_HasProcessedScore10 = true;
 		}
 		if (m_pGameUI->GetScore() % 20 != 0)

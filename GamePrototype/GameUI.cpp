@@ -11,9 +11,10 @@ GameUI::GameUI(float screenWidth, float screenHeight) :
 	m_IsGameOver{false},
 	m_IsShowingAllergy{false},
 	m_TimeElapsedSinceStartShowingAllergy{},
-	showAllergyName{},
+	m_showAllergyName{},
 	m_pNewAllergyTexture{},
-	m_pGameOverTexture{new Texture("ui/gameover.png")}
+	m_pGameOverTexture{new Texture("ui/gameover.png")},
+	m_ShowingAllergyMaxTimeShowing{5}
 {
 
 }
@@ -115,12 +116,13 @@ bool GameUI::IsGameOver() const noexcept
 void GameUI::SetGameOver()
 {
 	std::cout << std::endl << "Game over! press ENTER to restart" << std::endl;
+	std::cout << "You finished with a score of " << m_Score << "! " << std::endl;
 	m_IsGameOver = true;
 }
 
 void GameUI::ShowNewAllergy(const std::string allergyName)
 {
-	showAllergyName = allergyName;
+	m_showAllergyName = allergyName;
 	delete m_pNewAllergyTexture;
 	m_pNewAllergyTexture = new Texture("new allergy: " + allergyName, "UI/font.ttf", 40, Color4f{0.f, 0.f, 0.f, 1.f});
 	m_IsShowingAllergy = true;
@@ -128,4 +130,12 @@ void GameUI::ShowNewAllergy(const std::string allergyName)
 bool GameUI::IsShowingAllergy()
 {
 	return m_IsShowingAllergy;
+}
+void GameUI::ChangeShowingTime(float NumToAdd)
+{
+	m_ShowingAllergyMaxTimeShowing += NumToAdd;
+}
+float GameUI::GetShowingTime() const noexcept
+{
+	return m_ShowingAllergyMaxTimeShowing;
 }

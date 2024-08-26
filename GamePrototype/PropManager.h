@@ -4,7 +4,7 @@
 #include "iostream"
 #include "Prop.h"
 #include "GameUI.h"
-
+#include "SoundEffect.h"
 class PropManager
 {
 public:
@@ -28,7 +28,7 @@ public:
 	bool HasDiscardedAllergy();
 	bool HasConsumedFood();
 
-
+	float GetSpeed() const noexcept;
 	void UpdateScore(int score);
 	void AddRandomAllergy();
 
@@ -76,5 +76,8 @@ private:
 	int m_RndGroup;
 
 	int m_Score;
+
+	SoundEffect* m_Click;
+	SoundEffect* m_Buzz;
 };
 
